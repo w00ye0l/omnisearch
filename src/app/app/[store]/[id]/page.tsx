@@ -8,6 +8,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import AppIcon from '@/components/AppIcon';
 import AppScreenshot from '@/components/AppScreenshot';
 import { sanitizeAppDescription } from '@/lib/utils/textUtils';
+import { event } from '@/app/gtag';
 
 export default function AppDetailPage() {
   const router = useRouter();
@@ -27,7 +28,17 @@ export default function AppDetailPage() {
 
         if (cachedData) {
           console.log('Using cached app data');
-          setApp(JSON.parse(cachedData));
+          const appData = JSON.parse(cachedData);
+          setApp(appData);
+
+          // GA 이벤트: 상세 페이지 접근
+          event({
+            action: "앱상세_조회",
+            category: "상세페이지",
+            label: `${appData.title} (${store})`,
+            value: 1,
+          });
+
           setIsLoading(false);
           return;
         }
@@ -42,6 +53,14 @@ export default function AppDetailPage() {
 
         const data = await response.json();
         setApp(data);
+
+        // GA 이벤트: 상세 페이지 접근
+        event({
+          action: "앱상세_조회",
+          category: "상세페이지",
+          label: `${data.title} (${store})`,
+          value: 1,
+        });
       } catch (err) {
         setError(err instanceof Error ? err.message : '오류가 발생했습니다');
       } finally {
@@ -180,6 +199,15 @@ export default function AppDetailPage() {
               href={app.url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                // GA 이벤트: 스토어 링크 클릭
+                event({
+                  action: "스토어_이동",
+                  category: "상세페이지",
+                  label: `${app.title} (${storeLabel})`,
+                  value: 1,
+                });
+              }}
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-500 text-white text-sm font-semibold rounded-full hover:bg-blue-600 transition-colors"
             >
               <span>{storeLabel}에서 보기</span>

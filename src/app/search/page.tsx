@@ -7,6 +7,7 @@ import FilterBar from "@/components/FilterBar";
 import AppCard from "@/components/AppCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Logo from "@/components/Logo";
+import { event } from "@/app/gtag";
 import { AdSenseAd } from "@/third-parties/AdSense";
 import {
   App,
@@ -145,6 +146,14 @@ function SearchPage() {
     setIsLoadingMore(true);
     const newLimit = currentLimit + 20;
 
+    // GA 이벤트: 더보기 클릭
+    event({
+      action: "더보기_클릭",
+      category: "검색",
+      label: `검색어: ${searchQuery} - 현재: ${currentLimit}개 → ${newLimit}개`,
+      value: newLimit,
+    });
+
     try {
       const response = await fetch(
         `/api/search?q=${encodeURIComponent(
@@ -172,6 +181,14 @@ function SearchPage() {
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
+
+    // GA 이벤트: 검색 실행
+    event({
+      action: "검색_실행",
+      category: "검색",
+      label: query,
+      value: 1,
+    });
 
     // Update URL with search params
     const params = new URLSearchParams();
@@ -283,7 +300,15 @@ function SearchPage() {
                     (example) => (
                       <button
                         key={example}
-                        onClick={() => handleSearch(example)}
+                        onClick={() => {
+                          event({
+                            action: "추천_검색_클릭",
+                            category: "검색",
+                            label: example,
+                            value: 1,
+                          });
+                          handleSearch(example);
+                        }}
                         className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
                       >
                         {example}
@@ -377,7 +402,11 @@ function SearchPage() {
                       <div className="space-y-3">
                         {filteredApps.map((app, index) => (
                           <div key={`${app.store}-${app.id}`}>
-                            <AppCard app={app} />
+                            <AppCard
+                              app={app}
+                              searchQuery={searchQuery}
+                              rank={index + 1}
+                            />
                             {/* 5번째 결과마다 광고 삽입 */}
                             {(index + 1) % 5 === 0 &&
                               index < filteredApps.length - 1 && (

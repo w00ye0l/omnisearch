@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { event } from "@/app/gtag";
 import { App } from "@/lib/types/app.types";
 
 interface TrendingSectionProps {
@@ -20,6 +21,20 @@ export default function TrendingSection({
   badgeText,
   hoverColor,
 }: TrendingSectionProps) {
+  const handleAppClick = (app: App, rank: number) => {
+    // GA 이벤트: 인기 앱 클릭
+    event({
+      action: "인기앱_클릭",
+      category: "탐색",
+      label: `${app.title} (${app.store}) - 순위 ${rank}`,
+      value: rank,
+    });
+    sessionStorage.setItem(
+      `app-${app.store}-${app.id}`,
+      JSON.stringify(app)
+    );
+  };
+
   return (
     <div className="space-y-2">
       <h3 className="text-sm md:text-lg font-semibold text-gray-900 px-2 md:px-0 flex items-center gap-2">
@@ -34,12 +49,7 @@ export default function TrendingSection({
             <Link
               key={`${app.store}-${app.id}`}
               href={`/app/${app.store}/${app.id}`}
-              onClick={() =>
-                sessionStorage.setItem(
-                  `app-${app.store}-${app.id}`,
-                  JSON.stringify(app)
-                )
-              }
+              onClick={() => handleAppClick(app, index + 1)}
               className="flex items-start gap-2 md:gap-3 p-1.5 md:p-2 rounded-lg hover:bg-gray-50 transition-colors group"
             >
               <span className="text-[10px] md:text-sm font-semibold text-gray-400 w-3 md:w-6 flex-shrink-0 pt-0.5">

@@ -1,3 +1,6 @@
+import { GoogleAnalytics } from '@next/third-parties/google'
+import { GA_MEASUREMENT_ID } from './gtag';
+import { Analytics } from '@vercel/analytics/react';
 import AdSense from "@/third-parties/AdSense";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -101,13 +104,17 @@ export default function RootLayout({
       {adsenseId && (
         <head>
           <meta name="google-adsense-account" content={adsenseId} />
-        </head>
+        
+  {/* Google Analytics */}
+  <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
+  </head>
       )}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AdSense />
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );

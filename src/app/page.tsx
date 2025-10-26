@@ -6,6 +6,7 @@ import SearchBar from "@/components/SearchBar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TrendingSection from "@/components/TrendingSection";
 import Logo from "@/components/Logo";
+import { event } from "./gtag";
 import { CountryCode, SearchResponse } from "@/lib/types/app.types";
 import { COUNTRIES, getRegions } from "@/lib/data/countries";
 import {
@@ -57,10 +58,29 @@ export default function Home() {
   }, [country]);
 
   const handleSearch = (query: string) => {
+    // GA 이벤트: 메인 페이지 검색
+    event({
+      action: "검색_실행",
+      category: "검색",
+      label: query,
+      value: 1,
+    });
+
     const params = new URLSearchParams();
     params.set("q", query);
     params.set("country", country);
     router.push(`/search?${params.toString()}`);
+  };
+
+  const handleExampleSearch = (query: string) => {
+    // GA 이벤트: 추천 검색 클릭
+    event({
+      action: "추천_검색_클릭",
+      category: "검색",
+      label: query,
+      value: 1,
+    });
+    handleSearch(query);
   };
 
   return (
@@ -131,7 +151,7 @@ export default function Home() {
                 (example) => (
                   <button
                     key={example}
-                    onClick={() => handleSearch(example)}
+                    onClick={() => handleExampleSearch(example)}
                     className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
                   >
                     {example}

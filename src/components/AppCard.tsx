@@ -5,12 +5,15 @@ import { App } from '@/lib/types/app.types';
 import { Badge } from '@/components/ui/badge';
 import AppIcon from '@/components/AppIcon';
 import { sanitizeAppDescription } from '@/lib/utils/textUtils';
+import { event } from '@/app/gtag';
 
 interface AppCardProps {
   app: App;
+  searchQuery?: string;
+  rank?: number;
 }
 
-export default function AppCard({ app }: AppCardProps) {
+export default function AppCard({ app, searchQuery, rank }: AppCardProps) {
   const storeLabel = app.store === 'appstore' ? 'App Store' : 'Play Store';
   const storeVariant = app.store === 'appstore' ? 'appstore' : 'playstore';
 
@@ -27,6 +30,16 @@ export default function AppCard({ app }: AppCardProps) {
   // Store app data in sessionStorage for detail page
   const handleClick = () => {
     sessionStorage.setItem(`app-${app.store}-${app.id}`, JSON.stringify(app));
+
+    // GA 이벤트: 검색 결과 클릭
+    if (searchQuery) {
+      event({
+        action: "검색결과_클릭",
+        category: "검색",
+        label: `${app.title} (${app.store}) - 검색어: ${searchQuery}${rank ? ` - 순위: ${rank}` : ''}`,
+        value: rank || 1,
+      });
+    }
   };
 
   return (
