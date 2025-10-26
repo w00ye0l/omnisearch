@@ -6,6 +6,7 @@ import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import AppCard from "@/components/AppCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Logo from "@/components/Logo";
 import { AdSenseAd } from "@/third-parties/AdSense";
 import {
   App,
@@ -225,20 +226,8 @@ function SearchPage() {
             <div className="w-full max-w-3xl">
               {/* Logo and Title */}
               <div className="text-center mb-12">
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 mb-6">
-                  <svg
-                    className="w-8 h-8 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
+                <div className="inline-block mb-6">
+                  <Logo size={64} />
                 </div>
                 <h1 className="text-4xl font-semibold text-gray-900 mb-3">
                   Omnisearch
@@ -317,25 +306,9 @@ function SearchPage() {
                   {/* Logo - small */}
                   <button
                     onClick={() => router.push("/")}
-                    className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
-                    style={{
-                      background:
-                        "conic-gradient(#facc15, #f43f5e, #10b981, #3b82f6, #facc15)",
-                    }}
+                    className="flex-shrink-0 hover:opacity-90 transition-opacity"
                   >
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
+                    <Logo size={40} />
                   </button>
 
                   {/* Compact Search Bar */}

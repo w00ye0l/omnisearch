@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import SearchBar from "@/components/SearchBar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TrendingSection from "@/components/TrendingSection";
+import Logo from "@/components/Logo";
 import { CountryCode, SearchResponse } from "@/lib/types/app.types";
 import { COUNTRIES, getRegions } from "@/lib/data/countries";
 import {
@@ -68,26 +69,8 @@ export default function Home() {
         <div className="w-full max-w-3xl">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6"
-              style={{
-                background:
-                  "conic-gradient(#facc15, #f43f5e, #10b981, #3b82f6, #facc15)",
-              }}
-            >
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+            <div className="inline-block mb-6">
+              <Logo size={64} />
             </div>
             <h1 className="text-4xl font-semibold text-gray-900 mb-3">
               Omnisearch
