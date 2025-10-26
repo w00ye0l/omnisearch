@@ -1,0 +1,67 @@
+'use client';
+
+import Script from 'next/script';
+
+export const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || '';
+
+export default function AdSense() {
+  // AdSense Client ID가 없으면 로드하지 않음
+  if (!ADSENSE_CLIENT_ID) {
+    console.warn('NEXT_PUBLIC_ADSENSE_CLIENT_ID is not set');
+    return null;
+  }
+
+  return (
+    <>
+      <Script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT_ID}`}
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
+    </>
+  );
+}
+
+// AdSense 광고 컴포넌트
+export function AdSenseAd({ slot, style = {} }: { slot: string; style?: React.CSSProperties }) {
+  if (!ADSENSE_CLIENT_ID) {
+    // 개발 환경에서 광고 위치 표시
+    if (process.env.NODE_ENV === 'development') {
+      return (
+        <div
+          style={{
+            padding: '20px',
+            margin: '16px 0',
+            border: '2px dashed #e5e7eb',
+            borderRadius: '8px',
+            textAlign: 'center',
+            backgroundColor: '#f9fafb',
+            color: '#6b7280',
+            ...style,
+          }}
+        >
+          <p style={{ margin: 0, fontSize: '14px' }}>📢 AdSense 광고 영역</p>
+          <p style={{ margin: '4px 0 0 0', fontSize: '12px' }}>슬롯 ID: {slot}</p>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  return (
+    <div style={{ display: 'block', textAlign: 'center', margin: '16px 0', ...style }}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block' }}
+        data-ad-client={ADSENSE_CLIENT_ID}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <Script id={`adsense-ad-${slot}`} strategy="afterInteractive">
+        {`(adsbygoogle = window.adsbygoogle || []).push({});`}
+      </Script>
+    </div>
+  );
+}
