@@ -7,6 +7,7 @@ import FilterBar from "@/components/FilterBar";
 import AppCard from "@/components/AppCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Logo from "@/components/Logo";
+import Footer from "@/components/Footer";
 import { event } from "@/app/gtag";
 import { AdSenseAd } from "@/third-parties/AdSense";
 import {
@@ -55,7 +56,7 @@ function ScrollToTopButton() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 p-4 bg-white border-2 border-gray-300 rounded-full shadow-lg hover:border-blue-500 hover:shadow-xl transition-all z-50 group"
+          className="fixed bottom-24 right-6 p-4 bg-white border-2 border-gray-300 rounded-full shadow-lg hover:border-blue-500 hover:shadow-xl transition-all z-50 group"
           aria-label="맨 위로"
         >
           <svg
@@ -479,11 +480,7 @@ function SearchPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="max-w-4xl mx-auto px-4 text-center text-xs text-gray-500">
-          <p>© 2025 Omnisearch · Made with Next.js</p>
-        </div>
-      </footer>
+      <Footer />
 
       {/* Scroll to Top Button */}
       <ScrollToTopButton />

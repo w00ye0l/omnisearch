@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import AppIcon from '@/components/AppIcon';
 import AppScreenshot from '@/components/AppScreenshot';
+import Footer from '@/components/Footer';
 import { sanitizeAppDescription } from '@/lib/utils/textUtils';
 import { event } from '@/app/gtag';
 
@@ -296,11 +297,9 @@ export default function AppDetailPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-6 mt-12">
-        <div className="max-w-4xl mx-auto px-4 text-center text-xs text-gray-500">
-          <p>© 2025 Omnisearch · Made with Next.js</p>
-        </div>
-      </footer>
+      <div className="mt-12">
+        <Footer />
+      </div>
     </div>
   );
 }

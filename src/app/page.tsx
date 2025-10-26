@@ -6,6 +6,7 @@ import SearchBar from "@/components/SearchBar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import TrendingSection from "@/components/TrendingSection";
 import Logo from "@/components/Logo";
+import Footer from "@/components/Footer";
 import { event } from "./gtag";
 import { CountryCode, SearchResponse } from "@/lib/types/app.types";
 import { COUNTRIES, getRegions } from "@/lib/data/countries";
@@ -219,11 +220,7 @@ export default function Home() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-6">
-        <div className="max-w-4xl mx-auto px-4 text-center text-xs text-gray-500">
-          <p>© 2025 Omnisearch · Made with Next.js</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
