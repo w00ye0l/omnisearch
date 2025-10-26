@@ -11,6 +11,11 @@ export default function AdSense() {
     return null;
   }
 
+  // 프로덕션 환경이 아니면 로드하지 않음
+  if (process.env.NODE_ENV !== 'production') {
+    return null;
+  }
+
   return (
     <>
       <Script
