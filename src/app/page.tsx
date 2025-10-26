@@ -1,168 +1,226 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { CheckCircle, Github, Copy, Sparkles } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import axios from 'axios';
-
-const PACKAGE_NAME = '@easynext/cli';
-const CURRENT_VERSION = 'v0.1.35';
-
-function latestVersion(packageName: string) {
-  return axios
-    .get('https://registry.npmjs.org/' + packageName + '/latest')
-    .then((res) => res.data.version);
-}
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import SearchBar from "@/components/SearchBar";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import TrendingSection from "@/components/TrendingSection";
+import { CountryCode, SearchResponse } from "@/lib/types/app.types";
+import { COUNTRIES, getRegions } from "@/lib/data/countries";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Home() {
-  const { toast } = useToast();
-  const [latest, setLatest] = useState<string | null>(null);
+  const router = useRouter();
+  const [country, setCountry] = useState<CountryCode>("kr");
+  const [trendingApps, setTrendingApps] = useState<SearchResponse | null>(null);
+  const [isLoadingTrending, setIsLoadingTrending] = useState(false);
 
   useEffect(() => {
-    const fetchLatestVersion = async () => {
+    const fetchTrending = async () => {
+      setIsLoadingTrending(true);
       try {
-        const version = await latestVersion(PACKAGE_NAME);
-        setLatest(`v${version}`);
+        const [freeResponse, paidResponse] = await Promise.all([
+          fetch(`/api/trending?country=${country}&limit=10`),
+          fetch(`/api/trending/paid?country=${country}&limit=10`),
+        ]);
+
+        if (freeResponse.ok) {
+          const freeData = await freeResponse.json();
+          setTrendingApps(freeData);
+        }
+
+        if (paidResponse.ok) {
+          const paidData = await paidResponse.json();
+          setTrendingApps((prev) => ({
+            ...prev!,
+            paidAppStore: paidData.appStore,
+            paidPlayStore: paidData.playStore,
+          }));
+        }
       } catch (error) {
-        console.error('Failed to fetch version info:', error);
+        console.error("Failed to fetch trending apps:", error);
+      } finally {
+        setIsLoadingTrending(false);
       }
     };
-    fetchLatestVersion();
-  }, []);
 
-  const handleCopyCommand = () => {
-    navigator.clipboard.writeText(`npm install -g ${PACKAGE_NAME}@latest`);
-    toast({
-      description: 'Update command copied to clipboard',
-    });
+    fetchTrending();
+  }, [country]);
+
+  const handleSearch = (query: string) => {
+    const params = new URLSearchParams();
+    params.set("q", query);
+    params.set("country", country);
+    router.push(`/search?${params.toString()}`);
   };
 
-  const needsUpdate = latest && latest !== CURRENT_VERSION;
-
   return (
-    <div className="flex min-h-screen relative overflow-hidden">
-      {/* Main Content */}
-      <div className="min-h-screen flex bg-gray-100">
-        <div className="flex flex-col p-5 md:p-8 space-y-4">
-          <h1 className="text-3xl md:text-5xl font-semibold tracking-tighter !leading-tight text-left">
-            Easiest way to start
-            <br /> Next.js project
-            <br /> with Cursor
-          </h1>
-
-          <p className="text-lg text-muted-foreground">
-            Get Pro-created Next.js bootstrap just in seconds
-          </p>
-
-          <div className="flex items-center gap-2">
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="gap-2 w-fit rounded-full px-4 py-2 border border-black"
+    <div className="min-h-screen bg-white flex flex-col">
+      <div className="flex-1 flex items-center justify-center px-4 pt-16 md:pt-24">
+        <div className="w-full max-w-3xl">
+          {/* Logo and Title */}
+          <div className="text-center mb-8">
+            <div
+              className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6"
+              style={{
+                background:
+                  "conic-gradient(#facc15, #f43f5e, #10b981, #3b82f6, #facc15)",
+              }}
             >
-              <a href="https://github.com/easynextjs/easynext" target="_blank">
-                <Github className="w-4 h-4" />
-                GitHub
-              </a>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="secondary"
-              className="gap-2 w-fit rounded-full px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white"
-            >
-              <a href="https://easynext.org/premium" target="_blank">
-                <Sparkles className="w-4 h-4" />
-                Premium
-              </a>
-            </Button>
-          </div>
-          <Section />
-        </div>
-      </div>
-
-      <div className="min-h-screen ml-16 flex-1 flex flex-col items-center justify-center space-y-4">
-        <div className="flex flex-col items-center space-y-2">
-          <p className="text-muted-foreground">
-            Current Version: {CURRENT_VERSION}
-          </p>
-          <p className="text-muted-foreground">
-            Latest Version:{' '}
-            <span className="font-bold">{latest || 'Loading...'}</span>
-          </p>
-        </div>
-
-        {needsUpdate && (
-          <div className="flex flex-col items-center space-y-2">
-            <p className="text-yellow-600">New version available!</p>
-            <p className="text-sm text-muted-foreground">
-              Copy and run the command below to update:
-            </p>
-            <div className="relative group">
-              <pre className="bg-gray-100 p-4 rounded-lg">
-                npm install -g {PACKAGE_NAME}@latest
-              </pre>
-              <button
-                onClick={handleCopyCommand}
-                className="absolute top-2 right-2 p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <Copy className="w-4 h-4" />
-              </button>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-semibold text-gray-900 mb-3">
+              Omnisearch
+            </h1>
+            <p className="text-lg text-gray-600">
+              <span className="relative inline-block">
+                <span className="font-medium relative z-10">App Store</span>
+                <span className="absolute bottom-1 left-0 w-full h-2.5 bg-blue-300/60 -z-0"></span>
+              </span>
+              와{" "}
+              <span className="relative inline-block">
+                <span className="font-medium relative z-10">Play Store</span>
+                <span className="absolute bottom-1 left-0 w-full h-2.5 bg-green-300/60 -z-0"></span>
+              </span>
+              를 한 번에 검색하세요
+            </p>
+          </div>
+
+          {/* Search Bar */}
+          <SearchBar onSearch={handleSearch} isLoading={false} />
+
+          {/* Country Selector - Minimal */}
+          <div className="mt-4 flex justify-center">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-full text-sm">
+              <span className="text-gray-600">국가:</span>
+              <Select
+                value={country}
+                onValueChange={(value) => setCountry(value as CountryCode)}
+              >
+                <SelectTrigger className="w-auto min-w-[140px] h-8 border-none bg-transparent text-sm font-medium">
+                  <SelectValue>
+                    {COUNTRIES.find((c) => c.code === country) &&
+                      `${COUNTRIES.find((c) => c.code === country)?.flag} ${
+                        COUNTRIES.find((c) => c.code === country)?.name
+                      }`}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {getRegions().map((region) => (
+                    <SelectGroup key={region}>
+                      <SelectLabel>{region}</SelectLabel>
+                      {COUNTRIES.filter((c) => c.region === region).map((c) => (
+                        <SelectItem key={c.code} value={c.code}>
+                          {c.flag} {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
-        )}
+
+          {/* Example searches */}
+          <div className="mt-6 text-center">
+            <div className="flex flex-wrap justify-center gap-2">
+              {["카카오톡", "인스타그램", "넷플릭스", "유튜브"].map(
+                (example) => (
+                  <button
+                    key={example}
+                    onClick={() => handleSearch(example)}
+                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                  >
+                    {example}
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Trending Apps Section */}
+      {(isLoadingTrending || trendingApps) && (
+        <div className="max-w-6xl mx-auto px-2 md:px-4 pb-12 pt-8 md:pt-12">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 px-2 md:px-0">
+            인기 앱
+          </h2>
+
+          {isLoadingTrending ? (
+            <div className="py-8">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            trendingApps && (
+              <div className="grid grid-cols-2 gap-3 md:gap-6">
+                <TrendingSection
+                  title="App Store"
+                  apps={trendingApps.appStore.apps}
+                  badgeVariant="appstore"
+                  badgeText="무료"
+                  hoverColor="group-hover:text-blue-600"
+                />
+
+                <TrendingSection
+                  title="Play Store"
+                  apps={trendingApps.playStore.apps}
+                  badgeVariant="playstore"
+                  badgeText="무료"
+                  hoverColor="group-hover:text-green-600"
+                />
+
+                {(trendingApps as any).paidAppStore?.apps && (
+                  <TrendingSection
+                    title="App Store"
+                    apps={(trendingApps as any).paidAppStore.apps}
+                    badgeVariant="secondary"
+                    badgeText="유료"
+                    hoverColor="group-hover:text-blue-600"
+                  />
+                )}
+
+                {(trendingApps as any).paidPlayStore?.apps && (
+                  <TrendingSection
+                    title="Play Store"
+                    apps={(trendingApps as any).paidPlayStore.apps}
+                    badgeVariant="secondary"
+                    badgeText="유료"
+                    hoverColor="group-hover:text-green-600"
+                  />
+                )}
+              </div>
+            )
+          )}
+        </div>
+      )}
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 py-6">
+        <div className="max-w-4xl mx-auto px-4 text-center text-xs text-gray-500">
+          <p>© 2025 Omnisearch · Made with Next.js</p>
+        </div>
+      </footer>
     </div>
-  );
-}
-
-function Section() {
-  const items = [
-    { href: 'https://nextjs.org/', label: 'Next.js' },
-    { href: 'https://ui.shadcn.com/', label: 'shadcn/ui' },
-    { href: 'https://tailwindcss.com/', label: 'Tailwind CSS' },
-    { href: 'https://www.framer.com/motion/', label: 'framer-motion' },
-    { href: 'https://zod.dev/', label: 'zod' },
-    { href: 'https://date-fns.org/', label: 'date-fns' },
-    { href: 'https://ts-pattern.dev/', label: 'ts-pattern' },
-    { href: 'https://es-toolkit.dev/', label: 'es-toolkit' },
-    { href: 'https://zustand.docs.pmnd.rs/', label: 'zustand' },
-    { href: 'https://supabase.com/', label: 'supabase' },
-    { href: 'https://react-hook-form.com/', label: 'react-hook-form' },
-  ];
-
-  return (
-    <div className="flex flex-col py-5 md:py-8 space-y-2 opacity-75">
-      <p className="font-semibold">What&apos;s Included</p>
-
-      <div className="flex flex-col space-y-1 text-muted-foreground">
-        {items.map((item) => (
-          <SectionItem key={item.href} href={item.href}>
-            {item.label}
-          </SectionItem>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SectionItem({
-  children,
-  href,
-}: {
-  children: React.ReactNode;
-  href: string;
-}) {
-  return (
-    <a
-      href={href}
-      className="flex items-center gap-2 underline"
-      target="_blank"
-    >
-      <CheckCircle className="w-4 h-4" />
-      <p>{children}</p>
-    </a>
   );
 }
