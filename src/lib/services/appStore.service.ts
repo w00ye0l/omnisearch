@@ -82,12 +82,12 @@ export class AppStoreService {
     let formattedPrice: string;
     if (currency === "KRW" || currency === "JPY") {
       // 정수로 표시하고 천단위 콤마 추가
-      formattedPrice = Math.round(price).toLocaleString('en-US');
+      formattedPrice = Math.round(price).toLocaleString("en-US");
     } else {
       // 소수점 2자리 + 천단위 콤마
-      formattedPrice = price.toLocaleString('en-US', {
+      formattedPrice = price.toLocaleString("en-US", {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2
+        maximumFractionDigits: 2,
       });
     }
 
@@ -97,7 +97,10 @@ export class AppStoreService {
   /**
    * Get top free apps
    */
-  static async getTopFreeApps(country: string = 'kr', limit: number = 10): Promise<App[]> {
+  static async getTopFreeApps(
+    country: string = "kr",
+    limit: number = 10
+  ): Promise<App[]> {
     try {
       const results = await store.list({
         collection: store.collection.TOP_FREE_IOS,
@@ -107,7 +110,7 @@ export class AppStoreService {
 
       return results.map((app: any) => this.transformAppStoreApp(app));
     } catch (error) {
-      console.error('App Store top free apps error:', error);
+      console.error("App Store top free apps error:", error);
       return [];
     }
   }
@@ -115,7 +118,10 @@ export class AppStoreService {
   /**
    * Get top paid apps
    */
-  static async getTopPaidApps(country: string = 'kr', limit: number = 10): Promise<App[]> {
+  static async getTopPaidApps(
+    country: string = "kr",
+    limit: number = 10
+  ): Promise<App[]> {
     try {
       const results = await store.list({
         collection: store.collection.TOP_PAID_IOS,
@@ -125,7 +131,7 @@ export class AppStoreService {
 
       return results.map((app: any) => this.transformAppStoreApp(app));
     } catch (error) {
-      console.error('App Store top paid apps error:', error);
+      console.error("App Store top paid apps error:", error);
       return [];
     }
   }

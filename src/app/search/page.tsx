@@ -1,19 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import SearchBar from '@/components/SearchBar';
-import FilterBar from '@/components/FilterBar';
-import AppCard from '@/components/AppCard';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import SearchBar from "@/components/SearchBar";
+import FilterBar from "@/components/FilterBar";
+import AppCard from "@/components/AppCard";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { AdSenseAd } from "@/third-parties/AdSense";
 import {
   App,
   StoreFilter,
   CountryCode,
   SearchResponse,
-} from '@/lib/types/app.types';
-import { sortAppsByRelevance } from '@/lib/utils/appSorter';
-import { COUNTRIES, getRegions } from '@/lib/data/countries';
+} from "@/lib/types/app.types";
+import { sortAppsByRelevance } from "@/lib/utils/appSorter";
+import { COUNTRIES, getRegions } from "@/lib/data/countries";
 import {
   Select,
   SelectContent,
@@ -22,7 +23,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -36,14 +37,14 @@ function ScrollToTopButton() {
       }
     };
 
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   };
 
@@ -75,26 +76,28 @@ function ScrollToTopButton() {
   );
 }
 
-export default function Home() {
+function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [searchResults, setSearchResults] = useState<SearchResponse | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<SearchResponse | null>(
+    null
+  );
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [storeFilter, setStoreFilter] = useState<StoreFilter>('all');
-  const [country, setCountry] = useState<CountryCode>('kr');
+  const [storeFilter, setStoreFilter] = useState<StoreFilter>("all");
+  const [country, setCountry] = useState<CountryCode>("kr");
   const [currentLimit, setCurrentLimit] = useState(20);
   const [totalAvailable, setTotalAvailable] = useState(0);
 
   // Initialize from URL params
   useEffect(() => {
-    const q = searchParams.get('q');
-    const c = searchParams.get('country') as CountryCode;
+    const q = searchParams.get("q");
+    const c = searchParams.get("country") as CountryCode;
 
-    if (c && COUNTRIES.find(country => country.code === c)) {
+    if (c && COUNTRIES.find((country) => country.code === c)) {
       setCountry(c);
     }
 
@@ -104,17 +107,23 @@ export default function Home() {
     }
   }, []);
 
-  const performSearch = async (query: string, countryCode: CountryCode, limit: number = 20) => {
+  const performSearch = async (
+    query: string,
+    countryCode: CountryCode,
+    limit: number = 20
+  ) => {
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await fetch(
-        `/api/search?q=${encodeURIComponent(query)}&country=${countryCode}&limit=${limit}`
+        `/api/search?q=${encodeURIComponent(
+          query
+        )}&country=${countryCode}&limit=${limit}`
       );
 
       if (!response.ok) {
-        throw new Error('검색에 실패했습니다');
+        throw new Error("검색에 실패했습니다");
       }
 
       const data: SearchResponse = await response.json();
@@ -122,8 +131,8 @@ export default function Home() {
       setCurrentLimit(limit);
       setTotalAvailable(data.totalCount);
     } catch (err) {
-      setError('검색 중 오류가 발생했습니다. 다시 시도해주세요.');
-      console.error('Search error:', err);
+      setError("검색 중 오류가 발생했습니다. 다시 시도해주세요.");
+      console.error("Search error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -137,11 +146,13 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `/api/search?q=${encodeURIComponent(searchQuery)}&country=${country}&limit=${newLimit}`
+        `/api/search?q=${encodeURIComponent(
+          searchQuery
+        )}&country=${country}&limit=${newLimit}`
       );
 
       if (!response.ok) {
-        throw new Error('검색에 실패했습니다');
+        throw new Error("검색에 실패했습니다");
       }
 
       const data: SearchResponse = await response.json();
@@ -151,8 +162,8 @@ export default function Home() {
       setCurrentLimit(newLimit);
       setTotalAvailable(data.totalCount);
     } catch (err) {
-      setError('추가 결과를 불러오는데 실패했습니다.');
-      console.error('Load more error:', err);
+      setError("추가 결과를 불러오는데 실패했습니다.");
+      console.error("Load more error:", err);
     } finally {
       setIsLoadingMore(false);
     }
@@ -163,8 +174,8 @@ export default function Home() {
 
     // Update URL with search params
     const params = new URLSearchParams();
-    params.set('q', query);
-    params.set('country', country);
+    params.set("q", query);
+    params.set("country", country);
     router.push(`/search?${params.toString()}`, { scroll: false });
 
     await performSearch(query, country);
@@ -176,8 +187,8 @@ export default function Home() {
     // If there's an active search, update URL and re-search
     if (searchQuery) {
       const params = new URLSearchParams();
-      params.set('q', searchQuery);
-      params.set('country', newCountry);
+      params.set("q", searchQuery);
+      params.set("country", newCountry);
       router.push(`/search?${params.toString()}`, { scroll: false });
 
       performSearch(searchQuery, newCountry);
@@ -190,9 +201,9 @@ export default function Home() {
     let apps: App[] = [];
 
     // Collect apps based on filter
-    if (storeFilter === 'all') {
+    if (storeFilter === "all") {
       apps = [...searchResults.appStore.apps, ...searchResults.playStore.apps];
-    } else if (storeFilter === 'appstore') {
+    } else if (storeFilter === "appstore") {
       apps = searchResults.appStore.apps;
     } else {
       apps = searchResults.playStore.apps;
@@ -251,22 +262,23 @@ export default function Home() {
                   <Select value={country} onValueChange={handleCountryChange}>
                     <SelectTrigger className="w-[140px] h-8 border-none bg-transparent text-sm font-medium">
                       <SelectValue>
-                        {COUNTRIES.find(c => c.code === country) &&
-                          `${COUNTRIES.find(c => c.code === country)?.flag} ${COUNTRIES.find(c => c.code === country)?.name}`
-                        }
+                        {COUNTRIES.find((c) => c.code === country) &&
+                          `${COUNTRIES.find((c) => c.code === country)?.flag} ${
+                            COUNTRIES.find((c) => c.code === country)?.name
+                          }`}
                       </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {getRegions().map((region) => (
                         <SelectGroup key={region}>
                           <SelectLabel>{region}</SelectLabel>
-                          {COUNTRIES
-                            .filter(c => c.region === region)
-                            .map((c) => (
+                          {COUNTRIES.filter((c) => c.region === region).map(
+                            (c) => (
                               <SelectItem key={c.code} value={c.code}>
                                 {c.flag} {c.name}
                               </SelectItem>
-                            ))}
+                            )
+                          )}
                         </SelectGroup>
                       ))}
                     </SelectContent>
@@ -278,15 +290,17 @@ export default function Home() {
               <div className="mt-12 text-center">
                 <p className="text-sm text-gray-500 mb-4">예시 검색:</p>
                 <div className="flex flex-wrap justify-center gap-2">
-                  {['카카오톡', '인스타그램', '넷플릭스', '유튜브'].map((example) => (
-                    <button
-                      key={example}
-                      onClick={() => handleSearch(example)}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
-                    >
-                      {example}
-                    </button>
-                  ))}
+                  {["카카오톡", "인스타그램", "넷플릭스", "유튜브"].map(
+                    (example) => (
+                      <button
+                        key={example}
+                        onClick={() => handleSearch(example)}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                      >
+                        {example}
+                      </button>
+                    )
+                  )}
                 </div>
               </div>
             </div>
@@ -302,10 +316,11 @@ export default function Home() {
                 <div className="flex items-center gap-4">
                   {/* Logo - small */}
                   <button
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push("/")}
                     className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity"
                     style={{
-                      background: 'conic-gradient(#facc15, #f43f5e, #10b981, #3b82f6, #facc15)'
+                      background:
+                        "conic-gradient(#facc15, #f43f5e, #10b981, #3b82f6, #facc15)",
                     }}
                   >
                     <svg
@@ -375,9 +390,9 @@ export default function Home() {
                     <h2 className="text-xl font-semibold text-gray-900">
                       검색 결과 {filteredApps.length}개
                     </h2>
-                    {storeFilter === 'all' && (
+                    {storeFilter === "all" && (
                       <p className="text-sm text-gray-500 mt-1">
-                        App Store {searchResults.appStore.count}개 · Play Store{' '}
+                        App Store {searchResults.appStore.count}개 · Play Store{" "}
                         {searchResults.playStore.count}개
                       </p>
                     )}
@@ -387,52 +402,61 @@ export default function Home() {
                   {filteredApps.length > 0 ? (
                     <>
                       <div className="space-y-3">
-                        {filteredApps.map((app) => (
-                          <AppCard key={`${app.store}-${app.id}`} app={app} />
+                        {filteredApps.map((app, index) => (
+                          <div key={`${app.store}-${app.id}`}>
+                            <AppCard app={app} />
+                            {/* 5번째 결과마다 광고 삽입 */}
+                            {(index + 1) % 5 === 0 &&
+                              index < filteredApps.length - 1 && (
+                                <AdSenseAd slot="1234567890" />
+                              )}
+                          </div>
                         ))}
                       </div>
 
                       {/* Load More Button */}
-                      {filteredApps.length >= currentLimit && currentLimit < 120 && (
-                        <div className="mt-8 text-center">
-                          <button
-                            onClick={handleLoadMore}
-                            disabled={isLoadingMore}
-                            className="px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                          >
-                            {isLoadingMore ? (
-                              <span className="flex items-center gap-2">
-                                <svg
-                                  className="animate-spin h-5 w-5"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                  ></circle>
-                                  <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                  ></path>
-                                </svg>
-                                로딩 중...
-                              </span>
-                            ) : (
-                              '더 보기'
-                            )}
-                          </button>
-                          <p className="text-xs text-gray-500 mt-3">
-                            {currentLimit}개 표시 중 · 최대 120개까지 로드 가능
-                          </p>
-                        </div>
-                      )}
+                      {filteredApps.length >= currentLimit &&
+                        currentLimit < 120 && (
+                          <div className="mt-8 text-center">
+                            <button
+                              onClick={handleLoadMore}
+                              disabled={isLoadingMore}
+                              className="px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            >
+                              {isLoadingMore ? (
+                                <span className="flex items-center gap-2">
+                                  <svg
+                                    className="animate-spin h-5 w-5"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                  </svg>
+                                  로딩 중...
+                                </span>
+                              ) : (
+                                "더 보기"
+                              )}
+                            </button>
+                            <p className="text-xs text-gray-500 mt-3">
+                              {currentLimit}개 표시 중 · 최대 120개까지 로드
+                              가능
+                            </p>
+                          </div>
+                        )}
                     </>
                   ) : (
                     <div className="text-center py-16">
@@ -462,5 +486,13 @@ export default function Home() {
       {/* Scroll to Top Button */}
       <ScrollToTopButton />
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <SearchPage />
+    </Suspense>
   );
 }

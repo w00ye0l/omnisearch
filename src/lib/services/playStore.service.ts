@@ -1,5 +1,8 @@
-import * as gplay from 'google-play-scraper';
 import { App } from '../types/app.types';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const gplayModule = require('google-play-scraper');
+const gplay = gplayModule.default || gplayModule;
 
 /**
  * Play Store Service
