@@ -30,6 +30,12 @@ export default function AdSense() {
 
 // AdSense 광고 컴포넌트
 export function AdSenseAd({ slot, style = {} }: { slot: string; style?: React.CSSProperties }) {
+  // AdSense 승인 대기 중이므로 광고를 렌더링하지 않음
+  // 승인 후 이 return null을 제거하세요
+  return null;
+
+  // 아래 코드는 AdSense 승인 후 활성화됩니다
+  /*
   if (!ADSENSE_CLIENT_ID) {
     // 개발 환경에서 광고 위치 표시
     if (process.env.NODE_ENV === 'development') {
@@ -69,4 +75,5 @@ export function AdSenseAd({ slot, style = {} }: { slot: string; style?: React.CS
       </Script>
     </div>
   );
+  */
 }
