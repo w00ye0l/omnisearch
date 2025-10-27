@@ -1,114 +1,79 @@
-이 프로젝트는 [`EasyNext`](https://github.com/easynext/easynext)를 사용해 생성된 [Next.js](https://nextjs.org) 프로젝트입니다.
+<div align="center">
 
-## Getting Started
+![Omnisearch](./public/og-image.png)
 
-개발 서버를 실행합니다.<br/>
-환경에 따른 명령어를 사용해주세요.
+# 🔍 Omnisearch
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**App Store와 Play Store를 한 번에 검색하세요**
 
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 결과를 확인할 수 있습니다.
+[![Next.js](https://img.shields.io/badge/Next.js-15.1.0-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-`app/page.tsx` 파일을 수정하여 페이지를 편집할 수 있습니다. 파일을 수정하면 자동으로 페이지가 업데이트됩니다.
+[Live Demo](https://omnisearch.store) · [Report Bug](https://github.com/w00ye0l/omnisearch/issues) · [Request Feature](https://github.com/w00ye0l/omnisearch/issues)
 
-## 기본 포함 라이브러리
+</div>
 
-- [Next.js](https://nextjs.org)
-- [React](https://react.dev)
-- [Tailwind CSS](https://tailwindcss.com)
-- [TypeScript](https://www.typescriptlang.org)
-- [ESLint](https://eslint.org)
-- [Prettier](https://prettier.io)
+---
+
+## 주요 기능
+
+- **통합 검색** - App Store와 Play Store를 동시에 검색
+- **다국가 지원** - 30개 이상의 국가별 앱 검색
+- **상세 정보** - 앱 평점, 가격, 스크린샷, 설명 제공
+- **인기 앱** - 무료/유료 인기 앱 랭킹 제공
+- **반응형 디자인** - 모바일, 태블릿, 데스크톱 최적화
+- **Analytics** - Google Analytics 및 Vercel Analytics 통합
+
+## 기술 스택
+
+### Core
+
+- **Framework**: [Next.js 15](https://nextjs.org) - React 프레임워크
+- **Language**: [TypeScript](https://www.typescriptlang.org) - 타입 안정성
+- **Styling**: [Tailwind CSS](https://tailwindcss.com) - 유틸리티 우선 CSS
+
+### Libraries
+
+- **UI Components**: [Shadcn UI](https://ui.shadcn.com) - 재사용 가능한 컴포넌트
+- **Icons**: [Lucide React](https://lucide.dev) - 아이콘 라이브러리
+- **Store Scraping**: [google-play-scraper](https://github.com/facundoolano/google-play-scraper), [app-store-scraper](https://github.com/facundoolano/app-store-scraper)
+
+## 지원 국가
+
+30개 이상의 국가를 지원합니다:
+
+- 🇰🇷 한국, 🇺🇸 미국, 🇯🇵 일본, 🇨🇳 중국, 🇬🇧 영국
+- 🇩🇪 독일, 🇫🇷 프랑스, 🇪🇸 스페인, 🇮🇹 이탈리아
+- 🇧🇷 브라질, 🇲🇽 멕시코, 🇨🇦 캐나다, 🇦🇺 호주
+- 그 외 다수...
+
+## 라이선스
+
+이 프로젝트는 [MIT](LICENSE) 라이선스 하에 배포됩니다.
+
+## 개발자
+
+**wooyeol**
+
+- GitHub: [@w00ye0l](https://github.com/w00ye0l)
+
+## 감사의 말
+
+이 프로젝트는 다음 오픈소스 프로젝트들을 사용합니다:
+
+- [EasyNext](https://github.com/easynext/easynext) - Next.js 프로젝트 생성 도구
+- [google-play-scraper](https://github.com/facundoolano/google-play-scraper)
+- [app-store-scraper](https://github.com/facundoolano/app-store-scraper)
 - [Shadcn UI](https://ui.shadcn.com)
-- [Lucide Icon](https://lucide.dev)
-- [date-fns](https://date-fns.org)
-- [react-use](https://github.com/streamich/react-use)
-- [es-toolkit](https://github.com/toss/es-toolkit)
-- [Zod](https://zod.dev)
-- [React Query](https://tanstack.com/query/latest)
-- [React Hook Form](https://react-hook-form.com)
-- [TS Pattern](https://github.com/gvergnaud/ts-pattern)
 
-## 사용 가능한 명령어
+---
 
-한글버전 사용
+<div align="center">
 
-```sh
-easynext lang ko
-```
+Made with by [w00ye0l](https://github.com/w00ye0l)
 
-최신버전으로 업데이트
+[⬆ Back to Top](#-omnisearch)
 
-```sh
-npm i -g @easynext/cli@latest
-# or
-yarn add -g @easynext/cli@latest
-# or
-pnpm add -g @easynext/cli@latest
-```
-
-Supabase 설정
-
-```sh
-easynext supabase
-```
-
-Next-Auth 설정
-
-```sh
-easynext auth
-
-# ID,PW 로그인
-easynext auth idpw
-# 카카오 로그인
-easynext auth kakao
-```
-
-유용한 서비스 연동
-
-```sh
-# Google Analytics
-easynext gtag
-
-# Microsoft Clarity
-easynext clarity
-
-# ChannelIO
-easynext channelio
-
-# Sentry
-easynext sentry
-
-# Google Adsense
-easynext adsense
-```
-
-## Google Analytics 사용법
-
-이 프로젝트는 Google Analytics(GA4)가 설정되어 있습니다. 측정 ID: `G-M18WZVD2PC`
-
-### 페이지 추적
-페이지 추적은 자동으로 설정되어 있습니다.
-
-### 이벤트 추적
-이벤트를 추적하려면 다음과 같이 사용하세요:
-
-```javascript
-import { event } from './app/gtag';
-
-// 이벤트 추적
-event({
-  action: '버튼_클릭',
-  category: '사용자_상호작용',
-  label: '로그인_버튼',
-  value: 1
-});
-```
+</div>
