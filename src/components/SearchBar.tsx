@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, FormEvent } from "react";
+import { useTranslation } from "@/lib/i18n/context";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -13,6 +14,7 @@ export default function SearchBar({
   isLoading = false,
   initialValue = "",
 }: SearchBarProps) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState(initialValue);
 
   // Update query when initialValue changes
@@ -34,7 +36,7 @@ export default function SearchBar({
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="앱 이름을 검색하세요..."
+          placeholder={t.common.searchPlaceholder}
           className="w-full px-5 py-4 pr-12 text-base bg-white border border-gray-200 rounded-full focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 focus:outline-none transition-all shadow-sm hover:shadow-md disabled:bg-gray-50 disabled:cursor-not-allowed"
           disabled={isLoading}
           maxLength={100}
@@ -43,7 +45,7 @@ export default function SearchBar({
           type="submit"
           disabled={isLoading || !query.trim()}
           className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-blue-500 text-white rounded-full hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-          aria-label="검색"
+          aria-label={t.common.search}
         >
           {isLoading ? (
             <svg

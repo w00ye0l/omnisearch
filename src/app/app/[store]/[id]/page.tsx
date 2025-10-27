@@ -9,11 +9,13 @@ import AppIcon from '@/components/AppIcon';
 import AppScreenshot from '@/components/AppScreenshot';
 import Footer from '@/components/Footer';
 import { sanitizeAppDescription } from '@/lib/utils/textUtils';
+import { useTranslation } from '@/lib/i18n/context';
 import { event } from '@/app/gtag';
 
 export default function AppDetailPage() {
   const router = useRouter();
   const params = useParams();
+  const { t } = useTranslation();
   const [app, setApp] = useState<App | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,14 +100,14 @@ export default function AppDetailPage() {
         <div className="text-center">
           <div className="text-5xl mb-4">⚠️</div>
           <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-            앱을 찾을 수 없습니다
+            {t.detail.appNotFound}
           </h1>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.back()}
             className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
           >
-            뒤로 가기
+            {t.common.back}
           </button>
         </div>
       </div>
@@ -114,6 +116,14 @@ export default function AppDetailPage() {
 
   const storeLabel = app.store === 'appstore' ? 'App Store' : 'Play Store';
   const storeVariant = app.store === 'appstore' ? 'appstore' : 'playstore';
+
+  // 가격 번역 함수
+  const translatePrice = (price: string): string => {
+    if (price === '무료') {
+      return t.main.free;
+    }
+    return price;
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -137,7 +147,7 @@ export default function AppDetailPage() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            <span className="font-medium">뒤로 가기</span>
+            <span className="font-medium">{t.common.back}</span>
           </button>
         </div>
       </header>
@@ -189,9 +199,9 @@ export default function AppDetailPage() {
 
               <div>
                 <div className="text-xl font-bold text-gray-900 mb-1">
-                  {app.price}
+                  {translatePrice(app.price)}
                 </div>
-                <p className="text-xs text-gray-500">가격</p>
+                <p className="text-xs text-gray-500">{t.detail.price}</p>
               </div>
             </div>
 
@@ -211,7 +221,7 @@ export default function AppDetailPage() {
               }}
               className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-500 text-white text-sm font-semibold rounded-full hover:bg-blue-600 transition-colors"
             >
-              <span>{storeLabel}에서 보기</span>
+              <span>{t.detail.viewInStore.replace('{store}', storeLabel)}</span>
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -232,7 +242,7 @@ export default function AppDetailPage() {
         {/* Screenshots */}
         {app.screenshots && app.screenshots.length > 0 && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">미리보기</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{t.detail.preview}</h2>
             <div className="overflow-x-auto -mx-4 px-4">
               <div className="flex gap-3 pb-4">
                 {app.screenshots.map((screenshot, index) => (
@@ -251,7 +261,7 @@ export default function AppDetailPage() {
         {/* Description */}
         {app.description && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">설명</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{t.detail.description}</h2>
             <div className="bg-gray-50 rounded-2xl p-6">
               <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                 {sanitizeAppDescription(app.description)}
@@ -263,21 +273,21 @@ export default function AppDetailPage() {
         {/* Additional Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-gray-50 rounded-2xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">개발자</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">{t.detail.developer}</h3>
             <p className="text-gray-700">{app.developer}</p>
           </div>
 
           {app.rating > 0 && (
             <div className="bg-gray-50 rounded-2xl p-6">
-              <h3 className="font-semibold text-gray-900 mb-2">평점</h3>
+              <h3 className="font-semibold text-gray-900 mb-2">{t.detail.rating}</h3>
               <div className="flex items-center gap-2">
                 <span className="text-yellow-500 text-xl">★</span>
                 <span className="text-gray-700 font-medium">
-                  {app.rating.toFixed(1)} / 5.0
+                  {t.detail.ratingOutOf.replace('{rating}', app.rating.toFixed(1))}
                 </span>
                 {app.ratingCount > 0 && (
                   <span className="text-gray-500 text-sm">
-                    ({formatNumber(app.ratingCount)}개 평가)
+                    ({t.detail.ratings.replace('{count}', formatNumber(app.ratingCount))})
                   </span>
                 )}
               </div>
@@ -285,12 +295,12 @@ export default function AppDetailPage() {
           )}
 
           <div className="bg-gray-50 rounded-2xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">가격</h3>
-            <p className="text-gray-700 font-medium">{app.price}</p>
+            <h3 className="font-semibold text-gray-900 mb-2">{t.detail.price}</h3>
+            <p className="text-gray-700 font-medium">{translatePrice(app.price)}</p>
           </div>
 
           <div className="bg-gray-50 rounded-2xl p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">플랫폼</h3>
+            <h3 className="font-semibold text-gray-900 mb-2">{t.detail.platform}</h3>
             <p className="text-gray-700">{storeLabel}</p>
           </div>
         </div>

@@ -17,16 +17,8 @@ import {
   SearchResponse,
 } from "@/lib/types/app.types";
 import { sortAppsByRelevance } from "@/lib/utils/appSorter";
-import { COUNTRIES, getRegions } from "@/lib/data/countries";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { COUNTRIES } from "@/lib/data/countries";
+import { useTranslation } from "@/lib/i18n/context";
 
 function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -82,6 +74,7 @@ function ScrollToTopButton() {
 function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t, locale } = useTranslation();
 
   const [searchResults, setSearchResults] = useState<SearchResponse | null>(
     null
@@ -195,6 +188,7 @@ function SearchPage() {
     const params = new URLSearchParams();
     params.set("q", query);
     params.set("country", country);
+    params.set("lang", locale);
     router.push(`/search?${params.toString()}`, { scroll: false });
 
     await performSearch(query, country);
@@ -208,6 +202,7 @@ function SearchPage() {
       const params = new URLSearchParams();
       params.set("q", searchQuery);
       params.set("country", newCountry);
+      params.set("lang", locale);
       router.push(`/search?${params.toString()}`, { scroll: false });
 
       performSearch(searchQuery, newCountry);
@@ -248,11 +243,9 @@ function SearchPage() {
                   <Logo size={64} />
                 </div>
                 <h1 className="text-4xl font-semibold text-gray-900 mb-3">
-                  Omnisearch
+                  {t.main.title}
                 </h1>
-                <p className="text-lg text-gray-600">
-                  App Store와 Play Store를 한 번에 검색하세요
-                </p>
+                <p className="text-lg text-gray-600">{t.main.subtitle}</p>
               </div>
 
               {/* Search Bar */}
@@ -265,57 +258,40 @@ function SearchPage() {
               {/* Country Selector - Minimal */}
               <div className="mt-6 flex justify-center">
                 <div className="inline-flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-full text-sm">
-                  <span className="text-gray-600">국가:</span>
-                  <Select value={country} onValueChange={handleCountryChange}>
-                    <SelectTrigger className="w-[140px] h-8 border-none bg-transparent text-sm font-medium">
-                      <SelectValue>
-                        {COUNTRIES.find((c) => c.code === country) &&
-                          `${COUNTRIES.find((c) => c.code === country)?.flag} ${
-                            COUNTRIES.find((c) => c.code === country)?.name
-                          }`}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getRegions().map((region) => (
-                        <SelectGroup key={region}>
-                          <SelectLabel>{region}</SelectLabel>
-                          {COUNTRIES.filter((c) => c.region === region).map(
-                            (c) => (
-                              <SelectItem key={c.code} value={c.code}>
-                                {c.flag} {c.name}
-                              </SelectItem>
-                            )
-                          )}
-                        </SelectGroup>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <span className="text-gray-600">{t.common.country}:</span>
+                  <FilterBar
+                    storeFilter="all"
+                    country={country}
+                    onStoreFilterChange={() => {}}
+                    onCountryChange={handleCountryChange}
+                    showStoreFilter={false}
+                  />
                 </div>
               </div>
 
               {/* Example searches */}
               <div className="mt-12 text-center">
-                <p className="text-sm text-gray-500 mb-4">예시 검색:</p>
+                <p className="text-sm text-gray-500 mb-4">
+                  {t.main.exampleSearchTitle}
+                </p>
                 <div className="flex flex-wrap justify-center gap-2">
-                  {["카카오톡", "인스타그램", "넷플릭스", "유튜브"].map(
-                    (example) => (
-                      <button
-                        key={example}
-                        onClick={() => {
-                          event({
-                            action: "추천_검색_클릭",
-                            category: "검색",
-                            label: example,
-                            value: 1,
-                          });
-                          handleSearch(example);
-                        }}
-                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
-                      >
-                        {example}
-                      </button>
-                    )
-                  )}
+                  {t.main.exampleSearches.map((example) => (
+                    <button
+                      key={example}
+                      onClick={() => {
+                        event({
+                          action: "추천_검색_클릭",
+                          category: "검색",
+                          label: example,
+                          value: 1,
+                        });
+                        handleSearch(example);
+                      }}
+                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                    >
+                      {example}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -367,7 +343,9 @@ function SearchPage() {
               {isLoading && (
                 <div className="py-12">
                   <LoadingSpinner />
-                  <p className="text-center text-gray-600 mt-4">검색 중...</p>
+                  <p className="text-center text-gray-600 mt-4">
+                    {t.search.searching}
+                  </p>
                 </div>
               )}
 
@@ -387,12 +365,12 @@ function SearchPage() {
                   {/* Results Summary */}
                   <div className="mb-6">
                     <h2 className="text-xl font-semibold text-gray-900">
-                      검색 결과 {filteredApps.length}개
+                      {t.search.searchResults} {filteredApps.length}
                     </h2>
                     {storeFilter === "all" && (
                       <p className="text-sm text-gray-500 mt-1">
-                        App Store {searchResults.appStore.count}개 · Play Store{" "}
-                        {searchResults.playStore.count}개
+                        {t.stores.appStore} {searchResults.appStore.count} ·{" "}
+                        {t.stores.playStore} {searchResults.playStore.count}
                       </p>
                     )}
                   </div>
@@ -407,6 +385,7 @@ function SearchPage() {
                               app={app}
                               searchQuery={searchQuery}
                               rank={index + 1}
+                              locale={locale}
                             />
                             {/* 5번째 결과마다 광고 삽입 */}
                             {(index + 1) % 5 === 0 &&
@@ -448,15 +427,17 @@ function SearchPage() {
                                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                     ></path>
                                   </svg>
-                                  로딩 중...
+                                  {t.search.loadingMore}
                                 </span>
                               ) : (
-                                "더 보기"
+                                t.search.loadMore
                               )}
                             </button>
                             <p className="text-xs text-gray-500 mt-3">
-                              {currentLimit}개 표시 중 · 최대 120개까지 로드
-                              가능
+                              {t.search.maxResults.replace(
+                                "{current}",
+                                String(currentLimit)
+                              )}
                             </p>
                           </div>
                         )}
@@ -465,10 +446,10 @@ function SearchPage() {
                     <div className="text-center py-16">
                       <div className="text-5xl mb-4">🔍</div>
                       <p className="text-gray-600 text-lg font-medium mb-2">
-                        검색 결과가 없습니다
+                        {t.search.noResults}
                       </p>
                       <p className="text-gray-500 text-sm">
-                        다른 검색어를 시도해보세요
+                        {t.search.noResultsDesc}
                       </p>
                     </div>
                   )}

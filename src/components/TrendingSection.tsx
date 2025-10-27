@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { event } from "@/app/gtag";
 import { App } from "@/lib/types/app.types";
+import type { Locale } from "@/lib/i18n/config";
 
 interface TrendingSectionProps {
   title: string;
@@ -12,6 +13,7 @@ interface TrendingSectionProps {
   badgeVariant: "appstore" | "playstore" | "secondary";
   badgeText: string;
   hoverColor: string;
+  locale?: Locale;
 }
 
 export default function TrendingSection({
@@ -20,6 +22,7 @@ export default function TrendingSection({
   badgeVariant,
   badgeText,
   hoverColor,
+  locale = 'ko',
 }: TrendingSectionProps) {
   const handleAppClick = (app: App, rank: number) => {
     // GA 이벤트: 인기 앱 클릭
@@ -48,7 +51,7 @@ export default function TrendingSection({
           {apps.slice(0, 10).map((app, index) => (
             <Link
               key={`${app.store}-${app.id}`}
-              href={`/app/${app.store}/${app.id}`}
+              href={`/app/${app.store}/${app.id}?lang=${locale}`}
               onClick={() => handleAppClick(app, index + 1)}
               className="flex items-start gap-2 md:gap-3 p-1.5 md:p-2 rounded-lg hover:bg-gray-50 transition-colors group"
             >

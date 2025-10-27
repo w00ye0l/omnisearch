@@ -1,10 +1,16 @@
+'use client';
+
+import { useTranslation } from "@/lib/i18n/context";
+
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="border-t border-gray-200 py-6">
       <div className="max-w-4xl mx-auto px-4 text-center text-xs text-gray-500">
-        <p className="mb-1">© 2025 Omnisearch</p>
+        <p className="mb-1">{t.footer.copyright}</p>
         <p className="flex items-center justify-center gap-1">
-          Made with Next.js ·{" "}
+          {t.footer.madeWith} ·{" "}
           <a
             href="https://github.com/w00ye0l"
             target="_blank"

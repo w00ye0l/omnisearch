@@ -5,15 +5,19 @@ import { App } from '@/lib/types/app.types';
 import { Badge } from '@/components/ui/badge';
 import AppIcon from '@/components/AppIcon';
 import { sanitizeAppDescription } from '@/lib/utils/textUtils';
+import { useTranslation } from '@/lib/i18n/context';
 import { event } from '@/app/gtag';
+import type { Locale } from '@/lib/i18n/config';
 
 interface AppCardProps {
   app: App;
   searchQuery?: string;
   rank?: number;
+  locale?: Locale;
 }
 
-export default function AppCard({ app, searchQuery, rank }: AppCardProps) {
+export default function AppCard({ app, searchQuery, rank, locale = 'ko' }: AppCardProps) {
+  const { t } = useTranslation();
   const storeLabel = app.store === 'appstore' ? 'App Store' : 'Play Store';
   const storeVariant = app.store === 'appstore' ? 'appstore' : 'playstore';
 
@@ -25,6 +29,14 @@ export default function AppCard({ app, searchQuery, rank }: AppCardProps) {
       return `${(num / 1000).toFixed(1)}K`;
     }
     return num.toString();
+  };
+
+  // 가격 번역 함수
+  const translatePrice = (price: string): string => {
+    if (price === '무료') {
+      return t.main.free;
+    }
+    return price;
   };
 
   // Store app data in sessionStorage for detail page
@@ -44,7 +56,7 @@ export default function AppCard({ app, searchQuery, rank }: AppCardProps) {
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all p-5 group">
-      <Link href={`/app/${app.store}/${app.id}`} className="block" onClick={handleClick}>
+      <Link href={`/app/${app.store}/${app.id}?lang=${locale}`} className="block" onClick={handleClick}>
         <div className="flex gap-4">
           {/* App Icon */}
           <div className="flex-shrink-0">
@@ -89,7 +101,7 @@ export default function AppCard({ app, searchQuery, rank }: AppCardProps) {
                 </div>
               )}
               <span className="text-gray-400">·</span>
-              <span className="font-medium text-gray-900">{app.price}</span>
+              <span className="font-medium text-gray-900">{translatePrice(app.price)}</span>
             </div>
           </div>
         </div>
@@ -111,7 +123,7 @@ export default function AppCard({ app, searchQuery, rank }: AppCardProps) {
           onClick={(e) => e.stopPropagation()}
           className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
         >
-          <span>{storeLabel}에서 보기</span>
+          <span>{t.detail.viewInStore.replace('{store}', storeLabel)}</span>
           <svg
             className="w-4 h-4"
             fill="none"

@@ -7,6 +7,8 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import TrendingSection from "@/components/TrendingSection";
 import Logo from "@/components/Logo";
 import Footer from "@/components/Footer";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslation } from "@/lib/i18n/context";
 import { event } from "./gtag";
 import { CountryCode, SearchResponse } from "@/lib/types/app.types";
 import { COUNTRIES, getRegions } from "@/lib/data/countries";
@@ -22,9 +24,15 @@ import {
 
 export default function Home() {
   const router = useRouter();
+  const { t, locale } = useTranslation();
   const [country, setCountry] = useState<CountryCode>("kr");
   const [trendingApps, setTrendingApps] = useState<SearchResponse | null>(null);
   const [isLoadingTrending, setIsLoadingTrending] = useState(false);
+
+  // 나라 이름 번역 함수
+  const getCountryName = (code: CountryCode): string => {
+    return t.countries[code] || COUNTRIES.find((c) => c.code === code)?.name || code;
+  };
 
   useEffect(() => {
     const fetchTrending = async () => {
@@ -70,6 +78,7 @@ export default function Home() {
     const params = new URLSearchParams();
     params.set("q", query);
     params.set("country", country);
+    params.set("lang", locale);
     router.push(`/search?${params.toString()}`);
   };
 
@@ -94,20 +103,16 @@ export default function Home() {
               <Logo size={64} />
             </div>
             <h1 className="text-4xl font-semibold text-gray-900 mb-3">
-              Omnisearch
+              {t.main.title}
             </h1>
             <p className="text-lg text-gray-600">
-              <span className="relative inline-block">
-                <span className="font-medium relative z-10">App Store</span>
-                <span className="absolute bottom-1 left-0 w-full h-2.5 bg-blue-300/60 -z-0"></span>
-              </span>
-              와{" "}
-              <span className="relative inline-block">
-                <span className="font-medium relative z-10">Play Store</span>
-                <span className="absolute bottom-1 left-0 w-full h-2.5 bg-green-300/60 -z-0"></span>
-              </span>
-              를 한 번에 검색하세요
+              {t.main.subtitle}
             </p>
+
+            {/* Language Switcher */}
+            <div className="mt-4 flex justify-center">
+              <LanguageSwitcher />
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -116,7 +121,7 @@ export default function Home() {
           {/* Country Selector - Minimal */}
           <div className="mt-4 flex justify-center">
             <div className="inline-flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-full text-sm">
-              <span className="text-gray-600">국가:</span>
+              <span className="text-gray-600">{t.common.country}:</span>
               <Select
                 value={country}
                 onValueChange={(value) => setCountry(value as CountryCode)}
@@ -124,9 +129,7 @@ export default function Home() {
                 <SelectTrigger className="w-auto min-w-[140px] h-8 border-none bg-transparent text-sm font-medium">
                   <SelectValue>
                     {COUNTRIES.find((c) => c.code === country) &&
-                      `${COUNTRIES.find((c) => c.code === country)?.flag} ${
-                        COUNTRIES.find((c) => c.code === country)?.name
-                      }`}
+                      `${COUNTRIES.find((c) => c.code === country)?.flag} ${getCountryName(country)}`}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -135,7 +138,7 @@ export default function Home() {
                       <SelectLabel>{region}</SelectLabel>
                       {COUNTRIES.filter((c) => c.region === region).map((c) => (
                         <SelectItem key={c.code} value={c.code}>
-                          {c.flag} {c.name}
+                          {c.flag} {getCountryName(c.code)}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -148,17 +151,15 @@ export default function Home() {
           {/* Example searches */}
           <div className="mt-6 text-center">
             <div className="flex flex-wrap justify-center gap-2">
-              {["카카오톡", "인스타그램", "넷플릭스", "유튜브"].map(
-                (example) => (
-                  <button
-                    key={example}
-                    onClick={() => handleExampleSearch(example)}
-                    className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
-                  >
-                    {example}
-                  </button>
-                )
-              )}
+              {t.main.exampleSearches.map((example) => (
+                <button
+                  key={example}
+                  onClick={() => handleExampleSearch(example)}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                >
+                  {example}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -168,7 +169,7 @@ export default function Home() {
       {(isLoadingTrending || trendingApps) && (
         <div className="max-w-6xl mx-auto px-2 md:px-4 pb-12 pt-8 md:pt-12">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 px-2 md:px-0">
-            인기 앱
+            {t.main.trendingApps}
           </h2>
 
           {isLoadingTrending ? (
@@ -179,38 +180,42 @@ export default function Home() {
             trendingApps && (
               <div className="grid grid-cols-2 gap-3 md:gap-6">
                 <TrendingSection
-                  title="App Store"
+                  title={t.stores.appStore}
                   apps={trendingApps.appStore.apps}
                   badgeVariant="appstore"
-                  badgeText="무료"
+                  badgeText={t.main.free}
                   hoverColor="group-hover:text-blue-600"
+                  locale={locale}
                 />
 
                 <TrendingSection
-                  title="Play Store"
+                  title={t.stores.playStore}
                   apps={trendingApps.playStore.apps}
                   badgeVariant="playstore"
-                  badgeText="무료"
+                  badgeText={t.main.free}
                   hoverColor="group-hover:text-green-600"
+                  locale={locale}
                 />
 
                 {(trendingApps as any).paidAppStore?.apps && (
                   <TrendingSection
-                    title="App Store"
+                    title={t.stores.appStore}
                     apps={(trendingApps as any).paidAppStore.apps}
                     badgeVariant="secondary"
-                    badgeText="유료"
+                    badgeText={t.main.paid}
                     hoverColor="group-hover:text-blue-600"
+                    locale={locale}
                   />
                 )}
 
                 {(trendingApps as any).paidPlayStore?.apps && (
                   <TrendingSection
-                    title="Play Store"
+                    title={t.stores.playStore}
                     apps={(trendingApps as any).paidPlayStore.apps}
                     badgeVariant="secondary"
-                    badgeText="유료"
+                    badgeText={t.main.paid}
                     hoverColor="group-hover:text-green-600"
+                    locale={locale}
                   />
                 )}
               </div>
