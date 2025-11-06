@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronUp } from "lucide-react";
 import SearchBar from "@/components/SearchBar";
 import FilterBar from "@/components/FilterBar";
 import AppCard from "@/components/AppCard";
@@ -48,23 +49,10 @@ function ScrollToTopButton() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-24 right-6 p-4 bg-white border-2 border-gray-300 rounded-full shadow-lg hover:border-blue-500 hover:shadow-xl transition-all z-50 group"
+          className="fixed bottom-20 md:bottom-24 right-4 md:right-6 p-3 md:p-4 bg-white border-2 border-gray-300 rounded-full shadow-lg hover:border-blue-500 hover:shadow-xl transition-all z-50 group"
           aria-label="맨 위로"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2.5}
-            stroke="currentColor"
-            className="w-6 h-6 text-gray-400 group-hover:text-blue-600 transition-colors"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4.5 15.75l7.5-7.5 7.5 7.5"
-            />
-          </svg>
+          <ChevronUp className="w-5 h-5 md:w-6 md:h-6 text-gray-400 group-hover:text-blue-600 transition-colors" />
         </button>
       )}
     </>
@@ -238,14 +226,14 @@ function SearchPage() {
           <div className="flex-1 flex items-center justify-center px-4">
             <div className="w-full max-w-3xl">
               {/* Logo and Title */}
-              <div className="text-center mb-12">
-                <div className="inline-block mb-6">
+              <div className="text-center mb-8 md:mb-12">
+                <div className="inline-block mb-4 md:mb-6">
                   <Logo size={64} />
                 </div>
-                <h1 className="text-4xl font-semibold text-gray-900 mb-3">
+                <h1 className="text-2xl md:text-4xl font-semibold text-gray-900 mb-2 md:mb-3">
                   {t.main.title}
                 </h1>
-                <p className="text-lg text-gray-600">{t.main.subtitle}</p>
+                <p className="text-sm md:text-lg text-gray-600">{t.main.subtitle}</p>
               </div>
 
               {/* Search Bar */}
@@ -256,8 +244,8 @@ function SearchPage() {
               />
 
               {/* Country Selector - Minimal */}
-              <div className="mt-6 flex justify-center">
-                <div className="inline-flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-full text-sm">
+              <div className="mt-4 md:mt-6 flex justify-center">
+                <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 bg-gray-50 rounded-full text-xs md:text-sm">
                   <span className="text-gray-600">{t.common.country}:</span>
                   <FilterBar
                     storeFilter="all"
@@ -270,8 +258,8 @@ function SearchPage() {
               </div>
 
               {/* Example searches */}
-              <div className="mt-12 text-center">
-                <p className="text-sm text-gray-500 mb-4">
+              <div className="mt-8 md:mt-12 text-center">
+                <p className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4">
                   {t.main.exampleSearchTitle}
                 </p>
                 <div className="flex flex-wrap justify-center gap-2">
@@ -287,7 +275,7 @@ function SearchPage() {
                         });
                         handleSearch(example);
                       }}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                      className="px-3 md:px-4 py-1.5 md:py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-xs md:text-sm text-gray-700 transition-colors"
                     >
                       {example}
                     </button>
@@ -341,9 +329,9 @@ function SearchPage() {
             <div className="max-w-4xl mx-auto px-4 py-8">
               {/* Loading State */}
               {isLoading && (
-                <div className="py-12">
+                <div className="py-8 md:py-12">
                   <LoadingSpinner />
-                  <p className="text-center text-gray-600 mt-4">
+                  <p className="text-center text-sm md:text-base text-gray-600 mt-3 md:mt-4">
                     {t.search.searching}
                   </p>
                 </div>
@@ -351,10 +339,10 @@ function SearchPage() {
 
               {/* Error State */}
               {error && (
-                <div className="py-8">
-                  <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-center">
-                    <div className="text-red-500 text-4xl mb-3">⚠️</div>
-                    <p className="text-red-700 font-medium">{error}</p>
+                <div className="py-6 md:py-8">
+                  <div className="bg-red-50 border border-red-200 rounded-2xl p-4 md:p-6 text-center">
+                    <div className="text-red-500 text-3xl md:text-4xl mb-2 md:mb-3">⚠️</div>
+                    <p className="text-sm md:text-base text-red-700 font-medium">{error}</p>
                   </div>
                 </div>
               )}
@@ -363,12 +351,12 @@ function SearchPage() {
               {!isLoading && searchResults && (
                 <>
                   {/* Results Summary */}
-                  <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900">
+                  <div className="mb-4 md:mb-6">
+                    <h2 className="text-base md:text-xl font-semibold text-gray-900">
                       {t.search.searchResults} {filteredApps.length}
                     </h2>
                     {storeFilter === "all" && (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="text-xs md:text-sm text-gray-500 mt-1">
                         {t.stores.appStore} {searchResults.appStore.count} ·{" "}
                         {t.stores.playStore} {searchResults.playStore.count}
                       </p>
@@ -399,16 +387,16 @@ function SearchPage() {
                       {/* Load More Button */}
                       {filteredApps.length >= currentLimit &&
                         currentLimit < 120 && (
-                          <div className="mt-8 text-center">
+                          <div className="mt-6 md:mt-8 text-center">
                             <button
                               onClick={handleLoadMore}
                               disabled={isLoadingMore}
-                              className="px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 font-medium rounded-xl hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                              className="px-6 md:px-8 py-2.5 md:py-3 bg-white border-2 border-gray-300 text-gray-700 text-sm md:text-base font-medium rounded-xl hover:border-blue-500 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
                               {isLoadingMore ? (
                                 <span className="flex items-center gap-2">
                                   <svg
-                                    className="animate-spin h-5 w-5"
+                                    className="animate-spin h-4 w-4 md:h-5 md:w-5"
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
                                     viewBox="0 0 24 24"
@@ -433,7 +421,7 @@ function SearchPage() {
                                 t.search.loadMore
                               )}
                             </button>
-                            <p className="text-xs text-gray-500 mt-3">
+                            <p className="text-[10px] md:text-xs text-gray-500 mt-2 md:mt-3">
                               {t.search.maxResults.replace(
                                 "{current}",
                                 String(currentLimit)
@@ -443,12 +431,12 @@ function SearchPage() {
                         )}
                     </>
                   ) : (
-                    <div className="text-center py-16">
-                      <div className="text-5xl mb-4">🔍</div>
-                      <p className="text-gray-600 text-lg font-medium mb-2">
+                    <div className="text-center py-12 md:py-16">
+                      <div className="text-4xl md:text-5xl mb-3 md:mb-4">🔍</div>
+                      <p className="text-gray-600 text-base md:text-lg font-medium mb-1.5 md:mb-2">
                         {t.search.noResults}
                       </p>
-                      <p className="text-gray-500 text-sm">
+                      <p className="text-gray-500 text-xs md:text-sm">
                         {t.search.noResultsDesc}
                       </p>
                     </div>

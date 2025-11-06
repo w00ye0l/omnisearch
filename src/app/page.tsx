@@ -31,7 +31,9 @@ export default function Home() {
 
   // 나라 이름 번역 함수
   const getCountryName = (code: CountryCode): string => {
-    return t.countries[code] || COUNTRIES.find((c) => c.code === code)?.name || code;
+    return (
+      t.countries[code] || COUNTRIES.find((c) => c.code === code)?.name || code
+    );
   };
 
   useEffect(() => {
@@ -98,19 +100,19 @@ export default function Home() {
       <div className="flex-1 flex items-center justify-center px-4 pt-16 md:pt-24">
         <div className="w-full max-w-3xl">
           {/* Logo and Title */}
-          <div className="text-center mb-8">
-            <div className="inline-block mb-6">
+          <div className="text-center mb-6 md:mb-8">
+            <div className="inline-block mb-4 md:mb-6">
               <Logo size={64} />
             </div>
-            <h1 className="text-4xl font-semibold text-gray-900 mb-3">
+            <h1 className="text-2xl md:text-4xl font-semibold text-gray-900 mb-2 md:mb-3">
               {t.main.title}
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-sm md:text-lg text-gray-600">
               {t.main.subtitle}
             </p>
 
             {/* Language Switcher */}
-            <div className="mt-4 flex justify-center">
+            <div className="mt-3 md:mt-4 flex justify-center">
               <LanguageSwitcher />
             </div>
           </div>
@@ -119,17 +121,19 @@ export default function Home() {
           <SearchBar onSearch={handleSearch} isLoading={false} />
 
           {/* Country Selector - Minimal */}
-          <div className="mt-4 flex justify-center">
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-full text-sm">
+          <div className="mt-3 md:mt-4 flex justify-center">
+            <div className="inline-flex items-center gap-2 md:gap-3 px-3 md:px-4 py-1.5 md:py-2 bg-gray-50 rounded-full text-xs md:text-sm">
               <span className="text-gray-600">{t.common.country}:</span>
               <Select
                 value={country}
                 onValueChange={(value) => setCountry(value as CountryCode)}
               >
-                <SelectTrigger className="w-auto min-w-[140px] h-8 border-none bg-transparent text-sm font-medium">
+                <SelectTrigger className="w-auto min-w-[120px] md:min-w-[140px] h-7 md:h-8 border-none bg-transparent text-xs md:text-sm font-medium">
                   <SelectValue>
                     {COUNTRIES.find((c) => c.code === country) &&
-                      `${COUNTRIES.find((c) => c.code === country)?.flag} ${getCountryName(country)}`}
+                      `${
+                        COUNTRIES.find((c) => c.code === country)?.flag
+                      } ${getCountryName(country)}`}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -149,13 +153,13 @@ export default function Home() {
           </div>
 
           {/* Example searches */}
-          <div className="mt-6 text-center">
+          <div className="mt-4 md:mt-6 text-center">
             <div className="flex flex-wrap justify-center gap-2">
               {t.main.exampleSearches.map((example) => (
                 <button
                   key={example}
                   onClick={() => handleExampleSearch(example)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors"
+                  className="px-3 md:px-4 py-1.5 md:py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-xs md:text-sm text-gray-700 transition-colors"
                 >
                   {example}
                 </button>
@@ -167,7 +171,7 @@ export default function Home() {
 
       {/* Trending Apps Section */}
       {(isLoadingTrending || trendingApps) && (
-        <div className="max-w-6xl mx-auto px-2 md:px-4 pb-12 pt-8 md:pt-12">
+        <div className="max-w-6xl mx-auto px-2 md:px-4 pb-12 pt-12">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 px-2 md:px-0">
             {t.main.trendingApps}
           </h2>

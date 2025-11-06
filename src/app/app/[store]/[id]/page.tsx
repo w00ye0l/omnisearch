@@ -279,19 +279,28 @@ export default function AppDetailPage() {
             </h2>
             <div className="bg-gray-50 rounded-2xl p-4 md:p-6">
               <div className="relative">
-                <p className={`text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-wrap ${!isDescriptionExpanded ? 'line-clamp-6' : ''}`}>
+                <p
+                  className={`text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-wrap ${
+                    !isDescriptionExpanded ? "line-clamp-6" : ""
+                  }`}
+                >
                   {sanitizeAppDescription(app.description)}
                 </p>
-                {!isDescriptionExpanded && sanitizeAppDescription(app.description).length > 300 && (
-                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-50 to-transparent"></div>
-                )}
+                {!isDescriptionExpanded &&
+                  sanitizeAppDescription(app.description).length > 300 && (
+                    <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-50 to-transparent"></div>
+                  )}
               </div>
               {sanitizeAppDescription(app.description).length > 300 && (
                 <button
-                  onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  onClick={() =>
+                    setIsDescriptionExpanded(!isDescriptionExpanded)
+                  }
                   className="mt-3 text-sm md:text-base text-blue-500 hover:text-blue-600 font-medium transition-colors"
                 >
-                  {isDescriptionExpanded ? t.detail.collapse : t.detail.showMore}
+                  {isDescriptionExpanded
+                    ? t.detail.collapse
+                    : t.detail.showMore}
                 </button>
               )}
             </div>
@@ -299,7 +308,7 @@ export default function AppDetailPage() {
         )}
 
         {/* Additional Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="bg-gray-50 rounded-2xl p-4 md:p-6">
             <h3 className="text-sm md:text-base font-semibold text-gray-900 mb-2">
               {t.detail.developer}
@@ -368,19 +377,11 @@ export default function AppDetailPage() {
                   {/* Review Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      {review.userImage ? (
-                        <img
-                          src={review.userImage}
-                          alt={review.userName}
-                          className="w-10 h-10 rounded-full"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-                          <span className="text-gray-600 font-semibold text-sm">
-                            {review.userName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
+                      <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
+                        <span className="text-gray-600 font-semibold text-sm">
+                          {review.userName.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
                       <div>
                         <p className="text-sm md:text-base font-semibold text-gray-900">
                           {review.userName}
@@ -408,7 +409,7 @@ export default function AppDetailPage() {
                     </div>
                     {review.version && (
                       <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded">
-                        {t.detail.version} {review.version}
+                        {review.version}
                       </span>
                     )}
                   </div>
