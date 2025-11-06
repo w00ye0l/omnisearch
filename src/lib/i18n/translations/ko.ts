@@ -47,6 +47,14 @@ export const ko = {
     viewInStore: '{store}에서 보기',
     ratings: '{count}개 평가',
     ratingOutOf: '{rating} / 5.0',
+    reviews: '리뷰',
+    noReviews: '아직 리뷰가 없습니다',
+    reviewsCount: '{count}개의 리뷰',
+    helpful: '도움이 됨',
+    version: '버전',
+    viewAllReviews: '모두 보기',
+    showMore: '더 보기',
+    collapse: '접기',
   },
 
   // Store Names

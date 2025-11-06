@@ -1,4 +1,4 @@
-import { App } from '../types/app.types';
+import { App, Review } from '../types/app.types';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const gplayModule = require('google-play-scraper');
@@ -243,10 +243,70 @@ export class PlayStoreService {
         country,
       });
 
-      return this.transformPlayStoreApp(app);
+      const transformedApp = this.transformPlayStoreApp(app);
+
+      // Fetch reviews
+      try {
+        const reviews = await this.getReviews(appId, country);
+        transformedApp.reviews = reviews;
+      } catch (reviewError) {
+        console.error('Failed to fetch reviews:', reviewError);
+        // Continue without reviews if they fail to load
+      }
+
+      return transformedApp;
     } catch (error) {
       console.error('Play Store details error:', error);
       return null;
+    }
+  }
+
+  /**
+   * Get app reviews
+   */
+  static async getReviews(appId: string, country: string = 'kr', limit: number = 100): Promise<Review[]> {
+    try {
+      console.log('[Play Store] Fetching reviews:', { appId, country, limit });
+
+      const results = await gplay.reviews({
+        appId,
+        lang: this.getLanguageFromCountry(country),
+        country,
+        sort: gplay.sort.NEWEST,
+        num: Math.min(limit, 50),
+      });
+
+      console.log('[Play Store] Reviews API response:', {
+        hasResults: !!results,
+        hasData: !!results?.data,
+        dataType: results?.data ? typeof results.data : 'undefined',
+        isArray: Array.isArray(results?.data),
+        dataLength: results?.data?.length,
+        keys: results ? Object.keys(results) : [],
+      });
+
+      // Check if results.data exists and is an array
+      if (!results || !results.data || !Array.isArray(results.data)) {
+        console.warn('[Play Store] No review data returned from Play Store');
+        return [];
+      }
+
+      console.log('[Play Store] Successfully mapped', results.data.length, 'reviews');
+
+      return results.data.map((review: any) => ({
+        id: review.id || '',
+        userName: review.userName || 'Anonymous',
+        userImage: review.userImage || undefined,
+        rating: review.score || 0,
+        title: review.title || undefined,
+        text: review.text || '',
+        date: review.date || new Date().toISOString(),
+        thumbsUp: review.thumbsUp || 0,
+        version: review.version || undefined,
+      }));
+    } catch (error) {
+      console.error('[Play Store] Reviews error:', error);
+      return [];
     }
   }
 }

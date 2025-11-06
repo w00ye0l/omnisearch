@@ -6,11 +6,18 @@ import { Locale, defaultLocale, getLocaleFromHeaders } from './config';
 import { ko } from './translations/ko';
 import { en } from './translations/en';
 
-type Translations = typeof ko;
+// Define a flexible translation type that preserves structure but allows any string values
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends Record<string, any>
+    ? DeepStringify<T[K]>
+    : string;
+};
+
+type Translations = DeepStringify<typeof ko>;
 
 const translations: Record<Locale, Translations> = {
-  ko,
-  en,
+  ko: ko as Translations,
+  en: en as Translations,
 };
 
 interface I18nContextType {

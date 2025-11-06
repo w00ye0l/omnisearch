@@ -28,6 +28,22 @@ export interface App {
   version?: string;
   releaseDate?: string;
   size?: string;
+  reviews?: Review[];
+}
+
+/**
+ * Review Interface
+ */
+export interface Review {
+  id: string;
+  userName: string;
+  userImage?: string;
+  rating: number; // 1-5
+  title?: string;
+  text: string;
+  date: string;
+  thumbsUp?: number;
+  version?: string;
 }
 
 /**

@@ -47,6 +47,14 @@ export const en = {
     viewInStore: 'View in {store}',
     ratings: '{count} ratings',
     ratingOutOf: '{rating} / 5.0',
+    reviews: 'Reviews',
+    noReviews: 'No reviews yet',
+    reviewsCount: '{count} reviews',
+    helpful: 'Helpful',
+    version: 'Version',
+    viewAllReviews: 'View All',
+    showMore: 'Show more',
+    collapse: 'Collapse',
   },
 
   // Store Names

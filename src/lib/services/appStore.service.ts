@@ -1,5 +1,5 @@
 import store from "app-store-scraper";
-import { App } from "../types/app.types";
+import { App, Review } from "../types/app.types";
 
 /**
  * App Store Service
@@ -166,7 +166,18 @@ export class AppStoreService {
 
           if (app) {
             console.log("App found in country:", tryCountry);
-            return this.transformAppStoreApp(app);
+            const transformedApp = this.transformAppStoreApp(app);
+
+            // Fetch reviews
+            try {
+              const reviews = await this.getReviews(appId, tryCountry);
+              transformedApp.reviews = reviews;
+            } catch (reviewError) {
+              console.error("Failed to fetch reviews:", reviewError);
+              // Continue without reviews if they fail to load
+            }
+
+            return transformedApp;
           }
         } catch (err) {
           console.log(`App not found in ${tryCountry}, trying next...`);
@@ -179,6 +190,61 @@ export class AppStoreService {
     } catch (error) {
       console.error("App Store details error:", error);
       return null;
+    }
+  }
+
+  /**
+   * Get app reviews
+   */
+  static async getReviews(appId: string, country: string = "kr", limit: number = 100): Promise<Review[]> {
+    try {
+      const numericId = parseInt(appId, 10);
+
+      if (isNaN(numericId)) {
+        console.error("[App Store] Invalid App Store ID for reviews:", appId);
+        return [];
+      }
+
+      console.log("[App Store] Fetching reviews:", { id: numericId, country, limit });
+
+      const results = await store.reviews({
+        id: numericId,
+        country,
+        page: 1,
+        sort: store.sort.RECENT,
+      });
+
+      console.log("[App Store] Reviews API response:", {
+        hasResults: !!results,
+        resultsType: typeof results,
+        isArray: Array.isArray(results),
+        resultsLength: Array.isArray(results) ? results.length : 0,
+        firstReviewKeys: results && results.length > 0 ? Object.keys(results[0]) : [],
+      });
+
+      // Check if results is an array
+      if (!results || !Array.isArray(results)) {
+        console.warn("[App Store] No review data returned from App Store");
+        return [];
+      }
+
+      console.log("[App Store] Successfully mapped", results.slice(0, limit).length, "reviews");
+
+      // Take only the requested number of reviews
+      return results.slice(0, limit).map((review: any) => ({
+        id: review.id || '',
+        userName: review.userName || 'Anonymous',
+        userImage: undefined, // App Store doesn't provide user images
+        rating: review.score || 0,
+        title: review.title || undefined,
+        text: review.text || '',
+        date: review.date || new Date().toISOString(),
+        thumbsUp: undefined, // App Store doesn't have thumbs up
+        version: review.version || undefined,
+      }));
+    } catch (error) {
+      console.error("[App Store] Reviews error:", error);
+      return [];
     }
   }
 }
