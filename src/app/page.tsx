@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { WebSiteJsonLd, OrganizationJsonLd } from "@/components/JsonLd";
 
 export default function Home() {
   const router = useRouter();
@@ -230,6 +231,10 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
+
+      {/* JSON-LD Structured Data */}
+      <WebSiteJsonLd />
+      <OrganizationJsonLd />
     </div>
   );
 }
