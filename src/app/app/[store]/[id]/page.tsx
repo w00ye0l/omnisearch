@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ store: string; id: string }>;
 }): Promise<Metadata> {
   const { store } = await params;
-  const baseUrl = "https://omnisearch-dun.vercel.app";
+  const baseUrl = "https://www.omnisearch.store";
 
   const storeLabel = store === "appstore" ? "App Store" : "Play Store";
   const platform = store === "appstore" ? "iOS" : "Android";

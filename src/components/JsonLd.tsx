@@ -7,14 +7,14 @@ export function WebSiteJsonLd() {
     '@type': 'WebSite',
     name: 'Omnisearch',
     alternateName: '옴니서치',
-    url: 'https://omnisearch-dun.vercel.app',
+    url: 'https://www.omnisearch.store',
     description: 'App Store와 Play Store를 한 번에 검색하세요. 앱 비교, 가격 확인, 평점 및 리뷰를 한눈에 확인할 수 있습니다.',
     inLanguage: ['ko', 'en'],
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://omnisearch-dun.vercel.app/search?q={search_term_string}',
+        urlTemplate: 'https://www.omnisearch.store/search?q={search_term_string}',
       },
       'query-input': 'required name=search_term_string',
     },
@@ -36,8 +36,8 @@ export function OrganizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'Omnisearch',
-    url: 'https://omnisearch-dun.vercel.app',
-    logo: 'https://omnisearch-dun.vercel.app/og-image.png',
+    url: 'https://www.omnisearch.store',
+    logo: 'https://www.omnisearch.store/og-image.png',
     sameAs: [],
   };
 

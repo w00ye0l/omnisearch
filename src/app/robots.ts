@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/'],
       },
     ],
-    sitemap: 'https://omnisearch-dun.vercel.app/sitemap.xml',
+    sitemap: 'https://www.omnisearch.store/sitemap.xml',
   };
 }

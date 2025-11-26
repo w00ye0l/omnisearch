@@ -13,7 +13,7 @@ export async function generateMetadata({
   const query = params?.q;
   const lang = params?.lang || "ko";
 
-  const baseUrl = "https://omnisearch-dun.vercel.app";
+  const baseUrl = "https://www.omnisearch.store";
 
   if (query) {
     const title =

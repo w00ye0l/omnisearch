@@ -156,9 +156,9 @@ export default function AppDetailClient() {
       />
       <BreadcrumbJsonLd
         items={[
-          { name: "Omnisearch", url: "https://omnisearch-dun.vercel.app" },
-          { name: storeLabel, url: `https://omnisearch-dun.vercel.app/search` },
-          { name: app.title, url: `https://omnisearch-dun.vercel.app/app/${store}/${id}` },
+          { name: "Omnisearch", url: "https://www.omnisearch.store" },
+          { name: storeLabel, url: `https://www.omnisearch.store/search` },
+          { name: app.title, url: `https://www.omnisearch.store/app/${store}/${id}` },
         ]}
       />
 

@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://omnisearch-dun.vercel.app"),
+  metadataBase: new URL("https://www.omnisearch.store"),
   alternates: {
     canonical: "/",
   },
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     title: "Omnisearch - 앱스토어 & 플레이스토어 통합 검색",
     description:
       "App Store와 Play Store를 한 번에 검색하세요. 앱 비교, 가격 확인, 평점 및 리뷰를 한눈에 확인할 수 있습니다.",
-    url: "https://omnisearch-dun.vercel.app",
+    url: "https://www.omnisearch.store",
     siteName: "Omnisearch",
     locale: "ko_KR",
     type: "website",
@@ -110,17 +110,17 @@ export default function RootLayout({
         <link
           rel="alternate"
           hrefLang="ko"
-          href="https://omnisearch-dun.vercel.app/?lang=ko"
+          href="https://www.omnisearch.store/?lang=ko"
         />
         <link
           rel="alternate"
           hrefLang="en"
-          href="https://omnisearch-dun.vercel.app/?lang=en"
+          href="https://www.omnisearch.store/?lang=en"
         />
         <link
           rel="alternate"
           hrefLang="x-default"
-          href="https://omnisearch-dun.vercel.app"
+          href="https://www.omnisearch.store"
         />
       </head>
       <body
