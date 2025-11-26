@@ -1,7 +1,6 @@
-import { GoogleAnalytics } from '@next/third-parties/google'
-import { GA_MEASUREMENT_ID } from './gtag';
-import { Analytics } from '@vercel/analytics/react';
-import AdSense from "@/third-parties/AdSense";
+import { GoogleAnalytics } from "@next/third-parties/google";
+import { GA_MEASUREMENT_ID } from "./gtag";
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -97,22 +96,36 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const adsenseId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
-
   return (
-    <html suppressHydrationWarning>
-      {adsenseId && (
-        <head>
-          <meta name="google-adsense-account" content={adsenseId} />
-        
-  {/* Google Analytics */}
-  <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
-  </head>
-      )}
+    <html lang="ko" suppressHydrationWarning>
+      <head>
+        {/* Google AdSense */}
+        <meta name="google-adsense-account" content="ca-pub-5263461707174732" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5263461707174732"
+          crossOrigin="anonymous"
+        />
+        <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
+        <link
+          rel="alternate"
+          hrefLang="ko"
+          href="https://omnisearch-dun.vercel.app/?lang=ko"
+        />
+        <link
+          rel="alternate"
+          hrefLang="en"
+          href="https://omnisearch-dun.vercel.app/?lang=en"
+        />
+        <link
+          rel="alternate"
+          hrefLang="x-default"
+          href="https://omnisearch-dun.vercel.app"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AdSense />
         <Providers>{children}</Providers>
         <Analytics />
       </body>
